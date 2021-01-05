@@ -668,10 +668,18 @@ WHERE P.Art_Code = A.Art_Code
 
 ### 11.1 Welche Pflanzen sind höher als die mittlere Höhe aller Pflanzen zusammen?
 ```sql
+SELECT Pflanzenname, Höhe
+FROM Pflanzen
+WHERE Höhe > (SELECT AVG(Höhe) FROM Pflanzen)
 ```
 
 ### 11.2 Welche Pflanzen sind teurer als der mittlere Preis der Blumen?
 ```sql
+SELECT Pflanzenname, Preis
+FROM Pflanzen
+WHERE Preis > (SELECT AVG(Preis)
+               FROM Pflanzen
+               WHERE Sorte = 'Blume')
 ```
 
 ### 11.3 Gesucht wird eine Übersicht der Lieferanten, bei denen noch Bestellungen mit einem Lieferdatum vorliegen, das vor dem 1. April 1985 liegt. Dieses Problem soll einmal mit und einmal ohne Unterfragenkonstruktion gelöst werden.
@@ -680,28 +688,98 @@ WHERE P.Art_Code = A.Art_Code
 
 ### 11.4 Welche Angebote haben den niedrigsten Angebotspreis aller Angebote in der Tabelle Angebote?
 ```sql
+SELECT *
+FROM Angebote
+WHERE Ang_Preis = (SELECT MIN(Ang_Preis)
+                   FROM Angebote);
 ```
 
 ### 11.5 Welche Pflanzen sind niedriger als die niedrigsten Staudenpflanzen?
 ```sql
+SELECT Pflanzenname, Höhe
+FROM Pflanzen
+WHERE Höhe < (SELECT MIN(Höhe)
+              FROM Pflanzen
+              WHERE Sorte = 'Staude')
 ```
 
 ### 11.6 Welche Pflanzen sind höher als die mittlere Höhe der Staudenpflanzen und zugleich billiger als der mittlere Preis der Staudenpflanzen?
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE Höhe > (SELECT AVG(Höhe)
+              FROM Pflanzen
+              WHERE Sorte = 'Staude')
+AND Preis < (SELECT AVG(Preis)
+             FROM Pflanzen
+             WHERE Sorte = 'Staude');
 ```
 
 ### 11.7 Welche Pflanzen haben einen Preis, der zwischen dem niedrigsten und dem höchsten Preis der rankenden Pflanzen liegt?
 ```sql
+
+SELECT *
+FROM Pflanzen
+WHERE Preis >= (SELECT MIN(Preis)
+                FROM Pflanzen
+                WHERE Sorte = 'Ranke')
+  AND Preis <= (SELECT MAX(Preis)
+                FROM Pflanzen
+                WHERE Sorte = 'Ranke');
 ```
 
 ### 11.8 Welche Bestellungen haben mehr als 5 % Preisnachlass erhalten? Bei der Lösung ist die Tabelle Bestelldaten zu verwenden.
 ```sql
+SELECT *
+FROM Bestellungen B
+WHERE Betrag < (SELECT 0.95 * SUM(Anzahl * Bestellpreis)
+                FROM Bestelldaten
+                WHERE Bestellnr = B.Bestellnr);
 ```
 
-### 11.9 Gesucht ist eine Übersicht aller Artikelcodes, die einen niedrigeren Ange-botspreis haben als der mittlere Angebotspreis für den betreffenden Artikel-code. In der Übersicht sind Artikelcode, Lieferantenname und Angebotspreis anzugeben; zu sortieren ist nach Artikelcode.
+### 11.9 Gesucht ist eine Übersicht aller Artikelcodes, die einen niedrigeren Angebotspreis haben als der mittlere Angebotspreis für den betreffenden Artikelcode. In der Übersicht sind Artikelcode, Lieferantenname und Angebotspreis anzugeben; zu sortieren ist nach Artikelcode.
 ```sql
+SELECT Art_Code, Lfr_Name, Ang_Preis
+FROM Lieferanten
+         JOIN Angebote AS A1 ON Lieferanten.Lfr_Code = A1.Lfr_Code
+    AND ANG_Preis < (SELECT AVG(Ang_Preis)
+                     FROM Angebote A2
+                     WHERE A1.Art_Code = A2.Art_Code);
+```
+oder
+```sql
+SELECT Art_Code, Lfr_Name, Ang_Preis
+FROM Lieferanten L,
+     Angebote A
+WHERE L.Lfr_Code = A.Lfr_Code
+  AND ANG_Preis < (SELECT AVG(Ang_Preis)
+                   FROM Angebote A2
+                   WHERE A.Art_Code = A2.Art_Code)
+ORDER BY Art_Code;
+
 ```
 
-### 11.10 Gesucht ist eine Übersicht der bestellten Pflanzen, die einen Bestellpreis ha-ben, der höher ist als der maximale Angebotspreis für eine derartige Pflanze. Folgende Daten sind in der Übersicht anzugeben: Bestellnummer, Artikel-code des Lieferanten, Pflanzenname und Bestellpreis
+### 11.10 Gesucht ist eine Übersicht der bestellten Pflanzen, die einen Bestellpreis haben, der höher ist als der maximale Angebotspreis für eine derartige Pflanze. Folgende Daten sind in der Übersicht anzugeben: Bestellnummer, Artikelcode des Lieferanten, Pflanzenname und Bestellpreis
 ```sql
+```
+SELECT B.Bestellnr, B.Art_Code_Lfr, Pflanzenname, Bestellpreis
+FROM Angebote A1
+         JOIN Pflanzen ON A1.Art_Code = Pflanzen.Art_Code
+         JOIN Bestelldaten B ON A1.Art_Code_Lfr = B.Art_Code_Lfr
+    AND Bestellpreis > (SELECT MAX(A2.Ang_Preis)
+                        FROM Angebote A2
+                        WHERE A1.Art_Code = A2.Art_Code);
+
+```
+oder
+```sql
+SELECT B.Bestellnr, B.Art_Code_Lfr, Pflanzenname, Bestellpreis
+FROM Angebote AS A,
+     Pflanzen AS P,
+     Bestelldaten AS B
+WHERE A.Art_Code_Lfr = B.Art_Code_Lfr
+  AND A.Art_Code = P.Art_Code
+  AND Bestellpreis > (SELECT MAX(A2.Ang_Preis)
+                      FROM Angebote A2
+                      WHERE A.Art_Code = A2.Art_Code);
 ```
