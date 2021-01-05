@@ -141,8 +141,8 @@ WHERE Bl_B <= 9
 SELECT *
 FROM Pflanzen
 WHERE Sorte = 'Staude'
-  AND Preis <= 9
-  AND Preis >= 3;
+  AND Preis <= 3
+  AND Preis >= 5;
 ```
 oder 
 ```sql
@@ -439,8 +439,8 @@ WHERE Bl_B <= 6
 ### 10.1 Gesucht wird eine Übersicht der Bestellungen mit der Bestellnummer, dem Namen des Lieferanten, dem Lieferdatum und dem Bestellbetrag.
 ```sql
 SELECT Bestellnr, Lfr_Name, L_Datum, Betrag
-FROM Bestellungen AS B,
-     Lieferanten AS L
+FROM Bestellungen B,
+     Lieferanten L
 WHERE B.Lfr_Code = L.Lfr_Code;
 ```
 oder
@@ -525,34 +525,145 @@ HAVING NOT Differenz = 0;
 ```
 ### 10.7 Woher kann das Gartenzentrum „Pflanzlust“ Staudenpflanzen beziehen?
 ```sql
+SELECT DISTINCT L.Wohnort
+FROM Angebote A,
+     Pflanzen P,
+     Lieferanten L
+WHERE A.Art_Code = P.Art_Code
+  AND L.Lfr_Code = A.Lfr_Code
+  AND P.Sorte = 'Staude';
+```
+oder
+```sql
+SELECT DISTINCT L.Wohnort
+FROM Lieferanten L
+         JOIN Angebote A ON L.Lfr_Code = A.Lfr_Code
+         JOIN Pflanzen P ON P.Art_Code = A.Art_Code
+WHERE P.Sorte = 'Staude';
 ```
 
-### 10.8 Gesucht wird eine Übersicht aller roten Pflanzen, die von Lieferanten gelie-fert werden, die nicht in Aalen wohnen. Folgende Daten sind anzugeben: Ar-tikelcode, Pflanzenname, Sorte, Name des Lieferanten, Wohnort. Die Sortie-rung soll nach Sorte und Pflanzenname erfolgen.
+### 10.8 Gesucht wird eine Übersicht aller roten Pflanzen, die von Lieferanten gelie-fert werden, die nicht in Aalen wohnen. Folgende Daten sind anzugeben: Artikelcode, Pflanzenname, Sorte, Name des Lieferanten, Wohnort. Die Sortierung soll nach Sorte und Pflanzenname erfolgen.
 ```sql
+SELECT A.Art_Code, P.Pflanzenname, P.Sorte, L.Lfr_Name, L.Wohnort
+FROM Pflanzen P,
+     Lieferanten L,
+     Angebote A
+WHERE P.Art_Code = A.Art_Code
+  AND L.Lfr_Code = A.Lfr_Code
+  AND L.Wohnort <> 'Aalen'
+ORDER BY Sorte, Pflanzenname;
 ```
+oder
+```sql
+SELECT A.Art_Code, P.Pflanzenname, P.Sorte, L.Lfr_Name, L.Wohnort
+FROM Pflanzen P
+         JOIN Angebote A on P.Art_Code = A.Art_Code
+         JOIN Lieferanten L on A.Lfr_Code = L.Lfr_Code
+  WHERE L.Wohnort <> 'Aalen'
+ORDER BY Sorte, Pflanzenname;
+```
+
 
 ### 10.9 Für jeden Artikelcode ist der niedrigste Angebotspreis zu bestimmen. In der Übersicht sollen folgende Daten enthalten sein: Artikelcode, Pflanzenname und der zugehörige Angebotspreis. Die Übersicht ist nach Pflanzennamen zu ordnen.
 ```sql
+SELECT A.Art_Code, P.Pflanzenname, MIN(Ang_Preis)
+FROM Pflanzen P
+         JOIN Angebote A on P.Art_Code = A.Art_Code
+GROUP BY A.Art_Code, Pflanzenname
+ORDER BY Pflanzenname;
+```
+oder
+```sql
+SELECT P.Art_Code, Pflanzenname, MIN(Ang_Preis)
+FROM Pflanzen P,
+     Angebote A
+WHERE P.Art_Code = A.Art_Code
+GROUP BY P.Art_Code, Pflanzenname
+ORDER BY Pflanzenname;
 ```
 
 ### 10.10 Es sind die Bestellungen herauszusuchen, die ein Bestelldatum haben, das mit dem Lieferdatum einer oder mehrerer Bestellungen gleich ist.
 ```sql
+SELECT A.Bestellnr, B.B_Datum, B.Bestellnr, B.L_Datum
+FROM Bestellungen A,
+     Bestellungen B
+WHERE A.B_Datum = B.L_Datum
+ORDER BY A.Bestellnr, B.Bestellnr;
 ```
-
-### 10.11 Welche Artikelcodes von „Pflanzlust“ gleichen den Artikelcodes eines ande-ren Lieferanten? Dabei sollen die Pflanzen unberücksichtigt bleiben.
+oder
 ```sql
+SELECT A.Bestellnr, B.B_Datum, B.Bestellnr, B.L_Datum
+FROM Bestellungen A
+JOIN Bestellungen B ON A.B_Datum = B.L_Datum
+ORDER BY A.Bestellnr, B.Bestellnr;
 ```
 
-### 10.12 Ein Kunde des Gartenzentrums „Pflanzlust“ will wissen, welche Pflanzab-stände bei den folgenden Pflanzen eingehalten werden müssen: Ölweide, Sauerdorn, Seidelbast und Kornelkirsche. Diesem Kunden ist eine Übersicht mit folgenden Daten zu verschaffen: Pflanzenname, Höhe und Pflanzab-stand.
+### 10.11 Welche Artikelcodes von „Pflanzlust“ gleichen den Artikelcodes eines anderen Lieferanten? Dabei sollen die Pflanzen unberücksichtigt bleiben.
 ```sql
+SELECT DISTINCT A2.LFR_CODE, A1.Art_Code, A2.Art_Code_Lfr
+FROM Angebote A1,
+     Angebote A2
+WHERE A1.Art_Code = A2.Art_Code_Lfr;
+```
+oder
+```sql
+SELECT DISTINCT A2.LFR_CODE, A1.Art_Code, A2.Art_Code_Lfr
+FROM Angebote A1
+         JOIN Angebote A2 ON A1.Art_Code = A2.Art_Code_Lfr;
+```
+### 10.12 Ein Kunde des Gartenzentrums „Pflanzlust“ will wissen, welche Pflanzabstände bei den folgenden Pflanzen eingehalten werden müssen: Ölweide, Sauerdorn, Seidelbast und Kornelkirsche. Diesem Kunden ist eine Übersicht mit folgenden Daten zu verschaffen: Pflanzenname, Höhe und Pflanzab-stand.
+```sql
+SELECT Pflanzenname, Höhe, Abstand
+FROM Pflanzen
+         JOIN PL_Schema ON Höhe BETWEEN Höhe1 AND Höhe2
+WHERE Pflanzenname IN ('Ölweide', 'Sauerdorn', 'Seidelbast', 'Kornelkirsche');
+```
+oder
+```sql
+SELECT Pflanzenname, Höhe, Abstand
+FROM Pflanzen,
+     PL_Schema
+WHERE Höhe BETWEEN Höhe1 AND Höhe2
+  AND Pflanzenname IN ('Ölweide', 'Sauerdorn', 'Seidelbast', 'Kornelkirsche');
 ```
 
-### 10.13 Für den vorgegebenen Zeitpunkt (1. April 1985) ist eine Übersicht anzuferti-gen, in der angegeben ist, welche Bestelltermine überzogen sind. Für die überfälligen Bestellungen muss in einer gesonderten Spalte die Bemerkun-gen „überfällig“ angegeben werden; für die anderen Bestellungen wird in der entsprechenden Spalte ein Strich eingesetzt. Die Übersicht ist nach der Be-stellnummer zu ordnen.
+### 10.13 Für den vorgegebenen Zeitpunkt (1. April 1985) ist eine Übersicht anzufertigen, in der angegeben ist, welche Bestelltermine überzogen sind. Für die überfälligen Bestellungen muss in einer gesonderten Spalte die Bemerkungen „überfällig“ angegeben werden; für die anderen Bestellungen wird in der entsprechenden Spalte ein Strich eingesetzt. Die Übersicht ist nach der Bestellnummer zu ordnen.
 ```sql
 ```
 
 ### 10.14 „Pflanzlust“ hätte gerne eine Liste, in der angegeben ist, welche Bäume in Aalen und welche Außerhalb von Aalen erhältlich sind. In der Übersicht müs-sen die folgenden Daten erscheinen: Artikelcode, Pflanzenname, Artikelcode des Lieferanten mit der Angabe „Aalen“ oder „außerhalb Aalen“.
 ```sql
+SELECT P.Art_Code, Pflanzenname, Art_Code_Lfr, 'Aalen'
+FROM Pflanzen P
+         JOIN Angebote A ON P.Art_Code = A.Art_Code AND P.Sorte = 'Baum'
+         JOIN Lieferanten L ON L.Lfr_Code = A.Lfr_Code AND Wohnort = 'Aalen'
+UNION
+SELECT P.Art_Code, Pflanzenname, Art_Code_Lfr, '-'
+FROM Pflanzen P
+         JOIN Angebote A ON P.Art_Code = A.Art_Code AND P.Sorte = 'Baum'
+         JOIN Lieferanten L ON L.Lfr_Code = A.Lfr_Code AND NOT Wohnort = 'Aalen';
+
+```
+oder
+```sql
+SELECT P.Art_Code, Pflanzenname, Art_Code_Lfr, 'Aalen'
+FROM Pflanzen P,
+     Angebote A,
+     Lieferanten L
+WHERE P.Art_Code = A.Art_Code
+  AND P.Sorte = 'Baum'
+  AND L.Lfr_Code = A.Lfr_Code
+  AND Wohnort = 'Aalen'
+UNION
+SELECT P.Art_Code, Pflanzenname, Art_Code_Lfr, '-'
+FROM Pflanzen P,
+     Angebote A,
+     Lieferanten L
+WHERE P.Art_Code = A.Art_Code
+  AND P.Sorte = 'Baum'
+  AND L.Lfr_Code = A.Lfr_Code
+  AND NOT Wohnort = 'Aalen';
+
 ```
 
 ### 11.1 Welche Pflanzen sind höher als die mittlere Höhe aller Pflanzen zusammen?
