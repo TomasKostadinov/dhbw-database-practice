@@ -438,28 +438,91 @@ WHERE Bl_B <= 6
 
 ### 10.1 Gesucht wird eine Übersicht der Bestellungen mit der Bestellnummer, dem Namen des Lieferanten, dem Lieferdatum und dem Bestellbetrag.
 ```sql
+SELECT Bestellnr, Lfr_Name, L_Datum, Betrag
+FROM Bestellungen AS B,
+     Lieferanten AS L
+WHERE B.Lfr_Code = L.Lfr_Code;
+```
+oder
+```sql
+SELECT Bestellnr, Lfr_Name, L_Datum, Betrag
+FROM Lieferanten AS L
+         JOIN Bestellungen B on L.Lfr_Code = B.Lfr_Code;
 ```
 
 ### 10.2 Welche Pflanzen haben eine Lieferzeit von maximal 10 Tagen? Gesucht wir d eine Übersicht mit folgenden Daten: Artikelcode, Lieferanten-Artikelcode, Pflanzenname und Lieferzeit.
 ```sql
+SELECT A.Art_Code, Art_Code_Lfr, Pflanzenname, Lfr_Zeit
+FROM Angebote A
+         JOIN Pflanzen P ON A.Art_Code = P.Art_Code
+WHERE A.Lfr_Zeit > 10;
 ```
-
+oder
+```sql
+SELECT A.Art_Code, Art_Code_Lfr, Pflanzenname, Lfr_Zeit
+FROM Angebote A,
+     Pflanzen P
+WHERE Lfr_Zeit > 10
+  AND A.Art_Code = P.Art_Code;
+```
 ### 10.3 Gesucht wird eine Übersicht, die erkennen lässt, bei welchen Lieferanten die Pflanzen bestellt werden können. Die Übersicht muss die folgenden Daten enthalten: Artikelcode, Pflanzenname, Lieferantencode, Name des Lieferan-ten, Lieferzeit und Angebotspreis. Die Übersicht soll nach Pflanzennamen sortiert sein.
 ```sql
+SELECT A.Art_Code, Pflanzenname, L.Lfr_Code, L.Lfr_Name
+FROM Angebote A
+         JOIN Pflanzen P ON P.Art_Code = A.Art_Code
+         JOIN Lieferanten L ON L.Lfr_Code = A.Lfr_Code;
 ```
-
+oder
+```sql
+SELECT A.Art_Code, Pflanzenname, L.Lfr_Code, L.Lfr_Name
+FROM Angebote A, Pflanzen P, Lieferanten L
+         WHERE A.Art_Code = P.Art_Code
+         AND L.Lfr_Code = A.Lfr_Code
+```
 ### 10.4 Gesucht wird eine Übersicht der Pflanzen, deren Preis mindestens 50 % über dem Angebotspreis liegt.
 ```sql
+SELECT Pflanzenname, A.Ang_Preis, P.Preis
+FROM Pflanzen P
+         JOIN Angebote A ON A.Art_Code = P.Art_Code
+WHERE A.Ang_Preis * 1.5 <= P.Preis;
 ```
-
-### 10.5 Wie unterscheiden sich die bisherigen Bestellpreise von den heutigen Ange-botspreisen? In der Liste sind die Daten Bestellnummer, Artikelcode des Lie-feranten und die positive oder negative Abweichung anzugeben.
+oder
 ```sql
+SELECT Pflanzenname, A.Ang_Preis, P.Preis
+FROM Angebote A,
+     Pflanzen P
+WHERE A.Art_Code = P.Art_Code
+  AND A.Ang_Preis * 1.5 <= P.Preis;
 ```
 
+### 10.5 Wie unterscheiden sich die bisherigen Bestellpreise von den heutigen Angebotspreisen? In der Liste sind die Daten Bestellnummer, Artikelcode des Lie-feranten und die positive oder negative Abweichung anzugeben.
+```sql
+SELECT B.Bestellpreis, A.Ang_Preis, B.Art_Code_Lfr, A.Ang_Preis - B.Bestellpreis as Differenz
+FROM Bestelldaten B,
+     Angebote A
+WHERE A.Art_Code_Lfr = B.Art_Code_Lfr;
+```
+oder
+```sql
+SELECT B.Bestellpreis, A.Ang_Preis, B.Art_Code_Lfr, A.Ang_Preis - B.Bestellpreis as Differenz
+FROM Angebote A
+         JOIN Bestelldaten B on A.Art_Code_Lfr = B.Art_Code_Lfr;
+```
 ### 10.6 Wie Aufgabe 10.5, aber nun ohne die Zeilen, in denen der Unterschied gleich Null ist!
 ```sql
+SELECT B.Bestellpreis, A.Ang_Preis, B.Art_Code_Lfr, A.Ang_Preis - B.Bestellpreis as Differenz
+FROM Bestelldaten B,
+     Angebote A
+WHERE A.Art_Code_Lfr = B.Art_Code_Lfr
+AND NOT A.Ang_Preis = B.Bestellpreis;
 ```
-
+oder
+```sql
+SELECT B.Bestellpreis, A.Ang_Preis, B.Art_Code_Lfr, A.Ang_Preis - B.Bestellpreis as Differenz
+FROM Angebote A
+         JOIN Bestelldaten B on A.Art_Code_Lfr = B.Art_Code_Lfr
+HAVING NOT Differenz = 0;
+```
 ### 10.7 Woher kann das Gartenzentrum „Pflanzlust“ Staudenpflanzen beziehen?
 ```sql
 ```
