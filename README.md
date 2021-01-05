@@ -611,7 +611,7 @@ SELECT DISTINCT A2.LFR_CODE, A1.Art_Code, A2.Art_Code_Lfr
 FROM Angebote A1
          JOIN Angebote A2 ON A1.Art_Code = A2.Art_Code_Lfr;
 ```
-### 10.12 Ein Kunde des Gartenzentrums „Pflanzlust“ will wissen, welche Pflanzabstände bei den folgenden Pflanzen eingehalten werden müssen: Ölweide, Sauerdorn, Seidelbast und Kornelkirsche. Diesem Kunden ist eine Übersicht mit folgenden Daten zu verschaffen: Pflanzenname, Höhe und Pflanzab-stand.
+### 10.12 Ein Kunde des Gartenzentrums „Pflanzlust“ will wissen, welche Pflanzabstände bei den folgenden Pflanzen eingehalten werden müssen: Ölweide, Sauerdorn, Seidelbast und Kornelkirsche. Diesem Kunden ist eine Übersicht mit folgenden Daten zu verschaffen: Pflanzenname, Höhe und Pflanzabstand.
 ```sql
 SELECT Pflanzenname, Höhe, Abstand
 FROM Pflanzen
