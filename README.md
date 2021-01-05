@@ -202,128 +202,238 @@ FROM Pflanzen
 WHERE Sorte LIKE '%-jährig';
 ```
 
-### 7.22 Ausgabe einer Übersicht aller Pflanzen, ausgenommen Bäume und Sträu-cher, die zwischen 100 und 200 cm hoch werden, rote oder blaue Blüten tra-gen und vor August zu blühen beginnen. Alle Daten außer dem Preis sind wichtig. Die Liste ist nach der Spalte Sorte und innerhalb der Sorte nach Pflanzennamen zu sortieren.
+### 7.22 Ausgabe einer Übersicht aller Pflanzen, ausgenommen Bäume und Sträucher, die zwischen 100 und 200 cm hoch werden, rote oder blaue Blüten tragen und vor August zu blühen beginnen. Alle Daten außer dem Preis sind wichtig. Die Liste ist nach der Spalte Sorte und innerhalb der Sorte nach Pflanzennamen zu sortieren.
 ```sql
+SELECT Art_Code, Pflanzenname, Sorte, Farbe, Höhe, Bl_B, Bl_E
+FROM Pflanzen
+WHERE Sorte NOT IN ('Baum', 'Strauch')
+  AND Höhe BETWEEN 100 AND 200
+  AND Farbe IN ('rot', 'blau')
+  AND Bl_B < 8
+ORDER BY Sorte, Pflanzenname;
 ```
 
 ### 7.23 Welche Pflanzen haben die Buchstaben ‘kraut’ als Nachsilbe in ihrem Na-men, aber gehören nicht zu der Sorte ‘Kraut’?
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE Sorte <> 'Kraut'
+  AND Pflanzenname LIKE '%kraut';
 ```
 
 ### 7.24 Ausgabe von Artikelcode und Pflanzenname aller Pflanzen, die mit dem Buchstaben ‘L’ beginnen und mit dem Buchstaben ‘E’ enden.
 ```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Pflanzenname LIKE 'l%'
+  AND Pflanzenname LIKE '%e';
+```
+oder
+```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Pflanzenname LIKE 'l%e';
 ```
 
-### 7.25 Ausgabe des Artikelcodes und Pflanzennamens aller Pflanzen, die mit dem Buchstaben ‘A’ beginnen oder die mit dem Buchstaben ‘M’ beginnen und en-den.
+### 7.25 Ausgabe des Artikelcodes und Pflanzennamens aller Pflanzen, die mit dem Buchstaben ‘A’ beginnen oder die mit dem Buchstaben ‘M’ beginnen und enden.
 ```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Pflanzenname LIKE 'A%'
+   OR Pflanzenname LIKE 'M%m';
 ```
 
-### 7.26 Sind Pflanzen vorhanden, die mindestens ein Leerzeichen in ihrem Pflan-zennamen haben?
+### 7.26 Sind Pflanzen vorhanden, die mindestens ein Leerzeichen in ihrem Pflanzennamen haben?
 ```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Pflanzenname LIKE '% %';
 ```
 
 ### 7.27 Welche Pflanzen haben einen Pflanzennamen mit genau fünf Buchstaben?
 ```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Pflanzenname LIKE '_____';
 ```
 
 ### 7.28 Welche Pflanzen haben einen Pflanzennamen von mindestens fünf Buchstaben Länge?
 ```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Pflanzenname LIKE '_____%';
 ```
 
-### 7.29 Welche Pflanzen haben einen Pflanzennamen von höchstens fünf Buchsta-ben?
+### 7.29 Welche Pflanzen haben einen Pflanzennamen von höchstens fünf Buchstaben?
 ```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE length(Pflanzenname) <= 5;
 ```
 
 ### 8.1 Wie viele Lieferanten hat das Gartenzentrum ‘Pflanzlust’?
 ```sql
+SELECT COUNT(*)
+FROM Lieferanten;
 ```
 
 ### 8.2 Wie hoch ist der durchschnittliche Preis aller Wasserpflanzen?
 ```sql
+SELECT AVG(Preis)
+FROM Pflanzen
+WHERE Sorte = 'Wasser';
 ```
 
 ### 8.3 Welches ist die maximale Höhe der Bäume in der Tabelle ‘Pflanzen’?
 ```sql
+SELECT MAX(Höhe)
+FROM Pflanzen
+WHERE Sorte = 'Baum';
 ```
 
 ### 8.4 Angabe des mittleren, des niedrigsten und des höchsten Angebotspreises des Lieferanten 013.
 ```sql
+SELECT MIN(Ang_Preis),AVG(Ang_Preis),MAX(Ang_Preis)
+FROM Angebote
+WHERE Lfr_Code = '13';
 ```
 
 ### 8.5 Welches ist der niedrigste Angebotspreis für Artikelcode 123?
 ```sql
+SELECT MIN(Ang_Preis)
+FROM Angebote
+WHERE Art_Code = '123';
 ```
 
 ### 8.6 Gesucht wird eine Übersicht des gesamten Bestellbetrages pro Bestellzeile aus der Tabelle ‘Bestelldaten’.
 ```sql
+SELECT Bestellnr, Art_Code_Lfr, Anzahl * Bestellpreis
+FROM Bestelldaten
 ```
 
 ### 8.7 Gesucht wird eine Übersicht der Sträucher aus der Tabelle ‘Pflanzen’, wobei die Preise um 5 % erhöht sind.
 ```sql
+SELECT Pflanzenname, Art_Code, Preis*1.05
+FROM Pflanzen
+WHERE Sorte = 'Strauch';
 ```
 
 ### 8.8 Wie hoch ist der Gesamtbetrag der Bestellungen bei dem Lieferanten 004?
 ```sql
+SELECT SUM(Betrag)
+FROM Bestellungen
+WHERE Lfr_Code = '004';
 ```
 
-### 8.9 Wieviel Stück des Lieferanten-Artikelcodes B111 (der vom Lieferanten be-nutzte Code) sind bestellt?
+### 8.9 Wieviel Stück des Lieferanten-Artikelcodes B111 (der vom Lieferanten benutzte Code) sind bestellt?
 ```sql
+SELECT SUM(Anzahl)
+FROM Bestelldaten
+WHERE Art_Code_Lfr = 'B111';
 ```
 
-### 8.10 Wie hoch ist der gesamte Bestellbetrag (ohne Preisabschlag) für den Liefe-ranten-Artikelcode B331?
+### 8.10 Wie hoch ist der gesamte Bestellbetrag (ohne Preisabschlag) für den Lieferanten-Artikelcode B331?
 ```sql
+SELECT SUM(Anzahl * Bestellpreis)
+FROM Bestelldaten
+WHERE Art_Code_Lfr = 'B331';
 ```
 
 ### 9.1 Gesucht ist die Anzahl Pflanzen pro Pflanzensorte aus der Tabelle Pflanzen.
 ```sql
+SELECT Sorte, COUNT(*)
+FROM Pflanzen
+GROUP BY Sorte;
 ```
 
 ### 9.2 Die Anzahl der Bestelldaten pro Bestellung ist zu zählen.
 ```sql
+SELECT Bestellnr, COUNT(*)
+FROM Bestelldaten
+GROUP BY Bestellnr;
 ```
 
 ### 9.3 Welches ist der mittlere Preis pro Pflanzensorte?
 ```sql
+SELECT Sorte, AVG(Preis)
+FROM Pflanzen
+GROUP BY Sorte;
 ```
 
-### 9.4 Wie viele Pflanzen sind pro Pflanzensorte-Farbgruppe in der Tabelle Pflan-zen enthalten?
+### 9.4 Wie viele Pflanzen sind pro Pflanzensorte-Farbgruppe in der Tabelle Pflanzen enthalten?
 ```sql
+SELECT Sorte, Farbe, COUNT(*)
+FROM Pflanzen
+GROUP BY Sorte, Farbe;
 ```
 
 ### 9.5 Es ist eine Übersicht anzufertigen, aus der visuell abgeleitet werden kann, welche Staudenpflanzenfarbe den höchsten mittleren Preis hat.
 ```sql
+SELECT Farbe, AVG(Preis)
+FROM Pflanzen
+WHERE Sorte = 'Staude'
+GROUP BY Farbe;
 ```
 
-### 9.6 Pro Lieferant (Code) ist die Gesamtartikelanzahl anzuzeigen, die der Liefe-rant dem Gartenzentrum anbietet; die Lieferzeit der Artikel soll weniger als 18 Tage betragen.
+### 9.6 Pro Lieferant (Code) ist die Gesamtartikelanzahl anzuzeigen, die der Lieferant dem Gartenzentrum anbietet; die Lieferzeit der Artikel soll weniger als 18 Tage betragen.
 ```sql
+SELECT COUNT(*), Lfr_Code
+FROM Angebote
+WHERE Lfr_Zeit < 18
+GROUP BY Lfr_Code;
 ```
 
-### 9.7 Wie hoch ist der mittlere Preis pro Pflanzensorte; ausgenommen sind Pflan-zen mit gelber Blüte?
+### 9.7 Wie hoch ist der mittlere Preis pro Pflanzensorte; ausgenommen sind Pflanzen mit gelber Blüte?
 ```sql
+SELECT Sorte, AVG(Preis)
+FROM Pflanzen
+WHERE Farbe <> 'gelb'
+GROUP BY Sorte;
 ```
 
-### 9.8 Gesucht wird eine Übersicht mit dem niedrigsten und dem höchsten Ange-botspreis pro Artikelcode.
+### 9.8 Gesucht wird eine Übersicht mit dem niedrigsten und dem höchsten Angebotspreis pro Artikelcode.
 ```sql
+SELECT Art_Code, MIN(Ang_Preis), MAX(Ang_Preis)
+FROM Angebote
+GROUP BY Art_Code;
 ```
 
-### 9.9 Welches ist der mittlere Preis pro Pflanzensorte für Sorten, von denen min-destens 10 Exemplare in der Tabelle Pflanzen enthalten sind?
+### 9.9 Welches ist der mittlere Preis pro Pflanzensorte für Sorten, von denen mindestens 10 Exemplare in der Tabelle Pflanzen enthalten sind?
 ```sql
+SELECT AVG(Preis), Sorte, COUNT(*)
+FROM Pflanzen
+GROUP BY Sorte
+HAVING COUNT(*) >= 10;
 ```
 
 ### 9.10 Haben die Pflanzen mit kurzen Lieferzeiten im Allgemeinen einen höheren mittleren Angebotspreis?
 ```sql
+SELECT AVG(Ang_Preis), Lfr_Zeit
+FROM Angebote
+GROUP BY Lfr_Zeit
+ORDER BY Lfr_Zeit;
 ```
 
-### 9.11 Gewünscht wird eine Übersicht mit dem niedrigsten und dem höchsten Be-stellpreis pro Artikelcode des Lieferanten.
+### 9.11 Gewünscht wird eine Übersicht mit dem niedrigsten und dem höchsten Bestellpreis pro Artikelcode des Lieferanten.
 ```sql
+SELECT MIN(Bestellpreis), MAX(Bestellpreis), Art_Code_Lfr
+FROM Bestelldaten
+GROUP BY Art_Code_Lfr;
 ```
 
-### 9.12 Gesucht wird eine Übersicht der Anzahl der zur Verfügung stehenden Pflan-zen, geordnet nach Monat des Blütebeginns/Höhe/Farbgruppe.
+### 9.12 Gesucht wird eine Übersicht der Anzahl der zur Verfügung stehenden Pflanzen, geordnet nach Monat des Blütebeginns/Höhe/Farbgruppe.
 ```sql
+SELECT Bl_B, Höhe, Farbe, COUNT(*)
+FROM Pflanzen
+GROUP BY Bl_B, Höhe, Farbe;
 ```
 
 ### 9.13 Welches ist der niedrigste Preis pro Pflanzensorte der Pflanzen, die in jedem Fall im Zeitraum von Mai bis Juni blühen?
 ```sql
+SELECT MIN(Preis)
+FROM Pflanzen
+WHERE Bl_B <= 6
+  AND Bl_E <= 5
 ```
 
 ### 10.1 Gesucht wird eine Übersicht der Bestellungen mit der Bestellnummer, dem Namen des Lieferanten, dem Lieferdatum und dem Bestellbetrag.
