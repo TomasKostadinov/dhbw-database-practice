@@ -54,7 +54,7 @@ FROM Pflanzen
 WHERE NOT Farbe = '';
 ```
 
-### 7.8 Welche unterschiedlichen Pflanzensorten sind in der Tabelle ‘Pflanzen’ ent-halten?
+### 7.8 Welche unterschiedlichen Pflanzensorten sind in der Tabelle ‘Pflanzen’ enthalten?
 ```sql
 SELECT DISTINCT Sorte
 FROM Pflanzen;
@@ -168,7 +168,7 @@ WHERE Bl_B = 3
    OR Bl_B = 10;
 ```
 
-### 7.19 Welche Pflanzen habe die Buchstaben ‘baum’ als Nachsilbe in ihrer Pflan-zenbezeichnung?
+### 7.19 Welche Pflanzen habe die Buchstaben ‘baum’ als Nachsilbe in ihrer Pflanzenbezeichnung?
 ```sql
 SELECT *
 FROM Pflanzen
@@ -213,7 +213,7 @@ WHERE Sorte NOT IN ('Baum', 'Strauch')
 ORDER BY Sorte, Pflanzenname;
 ```
 
-### 7.23 Welche Pflanzen haben die Buchstaben ‘kraut’ als Nachsilbe in ihrem Na-men, aber gehören nicht zu der Sorte ‘Kraut’?
+### 7.23 Welche Pflanzen haben die Buchstaben ‘kraut’ als Nachsilbe in ihrem Namen, aber gehören nicht zu der Sorte ‘Kraut’?
 ```sql
 SELECT *
 FROM Pflanzen
@@ -465,7 +465,7 @@ FROM Angebote A,
 WHERE Lfr_Zeit > 10
   AND A.Art_Code = P.Art_Code;
 ```
-### 10.3 Gesucht wird eine Übersicht, die erkennen lässt, bei welchen Lieferanten die Pflanzen bestellt werden können. Die Übersicht muss die folgenden Daten enthalten: Artikelcode, Pflanzenname, Lieferantencode, Name des Lieferan-ten, Lieferzeit und Angebotspreis. Die Übersicht soll nach Pflanzennamen sortiert sein.
+### 10.3 Gesucht wird eine Übersicht, die erkennen lässt, bei welchen Lieferanten die Pflanzen bestellt werden können. Die Übersicht muss die folgenden Daten enthalten: Artikelcode, Pflanzenname, Lieferantencode, Name des Lieferanten, Lieferzeit und Angebotspreis. Die Übersicht soll nach Pflanzennamen sortiert sein.
 ```sql
 SELECT A.Art_Code, Pflanzenname, L.Lfr_Code, L.Lfr_Name
 FROM Angebote A
@@ -495,7 +495,7 @@ WHERE A.Art_Code = P.Art_Code
   AND A.Ang_Preis * 1.5 <= P.Preis;
 ```
 
-### 10.5 Wie unterscheiden sich die bisherigen Bestellpreise von den heutigen Angebotspreisen? In der Liste sind die Daten Bestellnummer, Artikelcode des Lie-feranten und die positive oder negative Abweichung anzugeben.
+### 10.5 Wie unterscheiden sich die bisherigen Bestellpreise von den heutigen Angebotspreisen? In der Liste sind die Daten Bestellnummer, Artikelcode des Lieferanten und die positive oder negative Abweichung anzugeben.
 ```sql
 SELECT B.Bestellpreis, A.Ang_Preis, B.Art_Code_Lfr, A.Ang_Preis - B.Bestellpreis as Differenz
 FROM Bestelldaten B,
