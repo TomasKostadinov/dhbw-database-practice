@@ -761,7 +761,6 @@ ORDER BY Art_Code;
 
 ### 11.10 Gesucht ist eine Übersicht der bestellten Pflanzen, die einen Bestellpreis haben, der höher ist als der maximale Angebotspreis für eine derartige Pflanze. Folgende Daten sind in der Übersicht anzugeben: Bestellnummer, Artikelcode des Lieferanten, Pflanzenname und Bestellpreis
 ```sql
-```
 SELECT B.Bestellnr, B.Art_Code_Lfr, Pflanzenname, Bestellpreis
 FROM Angebote A1
          JOIN Pflanzen ON A1.Art_Code = Pflanzen.Art_Code
