@@ -2,93 +2,204 @@
 
 ### 7.1 Ausgabe einer Übersicht aller Daten der Lieferanten aus Aalen.
 ```sql
-SELECT * from Lieferanten WHERE Wohnort = 'Aalen';
+SELECT *
+FROM Lieferanten 
+WHERE Wohnort = 'Aalen';
 ```
 ### 7.2 Ausgabe einer alphabetisch geordneten Übersicht der Pflanzennamen, mit Artikelcode, Pflanzenname und Preis aller Pflanzen aus der Tabelle ‘Pflanzen’.
 ```sql
-SELECT Pflanzenname, Art_Code, Preis from Pflanzen ORDER BY Pflanzenname ASC;
+SELECT Pflanzenname, Art_Code, Preis 
+FROM Pflanzen 
+ORDER BY Pflanzenname ASC;
 ```
 
 ### 7.3 Welche Pflanzen beginnen im Monat März zu blühen?
 ```sql
-SELECT Pflanzenname from Pflanzen WHERE Bl_B = 3;
+SELECT Pflanzenname 
+FROM Pflanzen
+WHERE Bl_B = 3;
 ```
 
 ### 7.4 Ausgabe einer Übersicht aller Angebote aus der Tabelle ‘Angebote’, sortiert nach dem Artikelcode des Lieferanten. Ausgegeben werden sollen nur die Daten Artikelcode, Artikelcode des Lieferanten und Lieferantencode.
 ```sql
-SELECT Art_Code, Art_Code_Lfr, Lfr_Code from Angebote ORDER BY Lfr_Code;
+SELECT Art_Code, Art_Code_Lfr, Lfr_Code
+FROM Angebote 
+ORDER BY Lfr_Code;
 ```
 
 ### 7.5 Ausgabe einer Übersicht aller Wasserpflanzen, die nach ihrer Höhe sortiert sind.
 ```sql
-SELECT * from Pflanzen WHERE Sorte = 'Wasser' ORDER BY Höhe * 1 DESC;
+SELECT * 
+FROM Pflanzen 
+WHERE Sorte = 'Wasser' 
+ORDER BY Höhe * 1 DESC;
 ```
 
 ### 7.6 Ausgabe einer Liste der verschiedenen Farben, die zu den Pflanzen der Tabelle ‘Pflanzen’ gehören.
 ```sql
-SELECT DISTINCT Farbe from Pflanzen;
+SELECT DISTINCT Farbe 
+FROM Pflanzen;
 ```
 
 ### 7.7 Wie Übung 7.6, aber nun mit Ausnahme der Zeilen, in denen keine Farbe angegeben ist.
 ```sql
-SELECT DISTINCT Farbe from Pflanzen WHERE Farbe <> '';
+SELECT DISTINCT Farbe 
+FROM Pflanzen
+WHERE Farbe <> '';
+```
+oder
+```sql
+SELECT DISTINCT Farbe
+FROM Pflanzen
+WHERE NOT Farbe = '';
 ```
 
 ### 7.8 Welche unterschiedlichen Pflanzensorten sind in der Tabelle ‘Pflanzen’ ent-halten?
 ```sql
-SELECT DISTINCT Sorte from Pflanzen;
+SELECT DISTINCT Sorte
+FROM Pflanzen;
 ```
 
 ### 7.9 Angabe einer Übersicht aller Stauden, die gelbe Blüten haben. Von jeder Pflanze sind die folgenden Daten erwünscht: Artikelcode, Pflanzenname, Höhe und Bl_B.
 ```sql
-SELECT Art_Code, Pflanzenname, Höhe, Bl_B from Pflanzen where Farbe = 'gelb' and Sorte = 'Staude';
+SELECT Art_Code, Pflanzenname, Höhe, Bl_B
+FROM Pflanzen 
+WHERE Farbe = 'gelb' and Sorte = 'Staude';
 ```
 
 ### 7.10 Ausgabe einer Übersicht aller Pflanzen mit einem Preis über EUR 10,00, die nicht zu der Sorte der Bäume gehören.
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE NOT Sorte = 'Baum'
+  AND Preis > 10;
+```
+oder
+```sql
+SELECT *
+FROM Pflanzen
+WHERE Sorte <> 'Baum'
+  AND Preis > 10;
 ```
 
 ### 7.11 Ausgabe einer Liste aller Pflanzen, die im Juni zu blühen beginnen und gelbe Blüten haben, und zugleich aller Pflanzen, die im August zum ersten Mal blühen und rote Blüten haben. In der Übersicht sollen alle verfügbaren Arten enthalten sein.
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE (Bl_B = 6
+    AND Farbe = 'gelb')
+   OR (Bl_B = 8
+    AND Farbe = 'rot');
 ```
 
 ### 7.12 Welche Pflanzen mit gemischten Blütenfarben werden maximal 60 cm hoch?
 ```sql
+SELECT Pflanzenname, Höhe
+FROM Pflanzen
+WHERE Höhe <= 60;
 ```
 
 ### 7.13 Ausgabe einer Übersicht aller Lieferanten, die nicht in Hannover wohnen.
 ```sql
+SELECT *
+FROM Lieferanten
+WHERE Wohnort <> 'Hannover';
+```
+oder
+```sql
+SELECT *
+FROM Lieferanten
+WHERE NOT Wohnort = 'Hannover';
 ```
 
 ### 7.14 Von welchen Pflanzen ist sowohl die Farbe als auch die Höhe unbekannt?
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE Höhe = ''
+  AND Farbe = '';
 ```
 
 ### 7.15 Welche Pflanzen blühen auf jeden Fall in der Zeit von August bis Oktober?
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE Bl_B <= 8
+  AND Bl_E >= 10;
 ```
+
 ### 7.16 Welche Pflanzen blühen in jedem Fall im Monat September?
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE Bl_B <= 9
+  AND Bl_E >= 9;
 ```
 
 ### 7.17 Ausgabe einer Übersicht für alle Stauden zwischen EUR 3,00 und EUR 5,00.
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE Sorte = 'Staude'
+  AND Preis <= 9
+  AND Preis >= 3;
+```
+oder 
+```sql
+SELECT *
+FROM Pflanzen
+WHERE Sorte = 'Staude'
+  AND Preis BETWEEN 3 AND 5;
 ```
 
 ### 7.18 Ausgabe einer Übersicht aller Pflanzen, die im März, April, September oder Oktober zu blühen beginnen.
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE Bl_B IN (3, 4, 9, 10);
+```
+oder
+```sql
+SELECT *
+FROM Pflanzen
+WHERE Bl_B = 3
+   OR Bl_B = 4
+   OR Bl_B = 9
+   OR Bl_B = 10;
 ```
 
 ### 7.19 Welche Pflanzen habe die Buchstaben ‘baum’ als Nachsilbe in ihrer Pflan-zenbezeichnung?
 ```sql
+SELECT *
+FROM Pflanzen
+WHERE Pflanzenname LIKE '%baum';
 ```
 
 ### 7.20 Ausgabe des Artikelcodes und Pflanzennamens aller Pflanzen, die als dritten Buchstaben ein ‘n’ haben.
 ```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Pflanzenname LIKE '__n%';
 ```
 
 ### 7.21 Welche 1- und 2-jährigen Pflanzen stehen in der Tabelle ‘Pflanzen’? Diese Frage ist mit und ohne den Operator ‘LIKE’ zu lösen.
 ```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Sorte = '1-jährig'
+   OR Sorte = '2-jährig';
+```
+oder
+```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Sorte IN ('1-jährig', '2-jährig');
+```
+oder
+```sql
+SELECT Art_Code, Pflanzenname
+FROM Pflanzen
+WHERE Sorte LIKE '%-jährig';
 ```
 
 ### 7.22 Ausgabe einer Übersicht aller Pflanzen, ausgenommen Bäume und Sträu-cher, die zwischen 100 und 200 cm hoch werden, rote oder blaue Blüten tra-gen und vor August zu blühen beginnen. Alle Daten außer dem Preis sind wichtig. Die Liste ist nach der Spalte Sorte und innerhalb der Sorte nach Pflanzennamen zu sortieren.
