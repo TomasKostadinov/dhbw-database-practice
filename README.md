@@ -542,7 +542,7 @@ FROM Lieferanten L
 WHERE P.Sorte = 'Staude';
 ```
 
-### 10.8 Gesucht wird eine Übersicht aller roten Pflanzen, die von Lieferanten gelie-fert werden, die nicht in Aalen wohnen. Folgende Daten sind anzugeben: Artikelcode, Pflanzenname, Sorte, Name des Lieferanten, Wohnort. Die Sortierung soll nach Sorte und Pflanzenname erfolgen.
+### 10.8 Gesucht wird eine Übersicht aller roten Pflanzen, die von Lieferanten geliefert werden, die nicht in Aalen wohnen. Folgende Daten sind anzugeben: Artikelcode, Pflanzenname, Sorte, Name des Lieferanten, Wohnort. Die Sortierung soll nach Sorte und Pflanzenname erfolgen.
 ```sql
 SELECT A.Art_Code, P.Pflanzenname, P.Sorte, L.Lfr_Name, L.Wohnort
 FROM Pflanzen P,
@@ -631,7 +631,7 @@ WHERE Höhe BETWEEN Höhe1 AND Höhe2
 ```sql
 ```
 
-### 10.14 „Pflanzlust“ hätte gerne eine Liste, in der angegeben ist, welche Bäume in Aalen und welche Außerhalb von Aalen erhältlich sind. In der Übersicht müs-sen die folgenden Daten erscheinen: Artikelcode, Pflanzenname, Artikelcode des Lieferanten mit der Angabe „Aalen“ oder „außerhalb Aalen“.
+### 10.14 „Pflanzlust“ hätte gerne eine Liste, in der angegeben ist, welche Bäume in Aalen und welche Außerhalb von Aalen erhältlich sind. In der Übersicht müssen die folgenden Daten erscheinen: Artikelcode, Pflanzenname, Artikelcode des Lieferanten mit der Angabe „Aalen“ oder „außerhalb Aalen“.
 ```sql
 SELECT P.Art_Code, Pflanzenname, Art_Code_Lfr, 'Aalen'
 FROM Pflanzen P
